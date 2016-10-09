@@ -1,0 +1,64 @@
+$background_body: #2D1E2F;
+$background_main: #F7B32B;
+$background_header: transparent;
+$background_searchTitle: transparent;
+$background_results: #f08f2a;
+$background_result: transparent;
+$background_movieSelected: red;
+$font_bright: #fff;
+$font_dark: #000;
+
+body {
+  background: $background_body;
+}
+main {
+  background: $background_main;
+  width: 70%;
+  min-width: 800px;
+  margin: 0 auto;
+  padding: 10px;
+  .movieDatabase {
+    header {
+      padding: 10px;
+      background: $background_header;
+      h1 {
+        text-align: center;
+      }
+    }
+    .searchTitle {
+      padding: 10px;
+      background: $background_searchTitle;
+      margin: 0 0 0 10px;
+      input {
+        margin: 0 0 5px;
+      }
+    }
+    .results {
+      background: $background_results;
+      padding: 10px;
+      .result {
+        background: $background_result;
+        margin: 0 0 5px;
+        padding: 10px;
+        box-shadow: 0px 5px 1px -5px rgba(0,0,0,0.75);
+        .movieInfo {
+          display: inline-block;
+          vertical-align: top;
+          div {
+            margin: 10px 0 0 0;
+            padding: 5px;
+          }
+        }
+        .moviePoster {
+          display: inline-block;
+          img {
+            box-shadow: 3px 3px 1px 0px rgba(0,0,0,0.75);
+          }
+        }
+      }
+    }
+    .movieSelected {
+      //background: $background_movieSelected;
+    }
+  }
+}
