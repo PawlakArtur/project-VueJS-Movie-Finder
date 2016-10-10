@@ -5,6 +5,7 @@
     <title>Movie Finder</title>
     <link type="text/css" rel="stylesheet" href="/styles/normalize.min.css">
     <link type="text/css" rel="stylesheet" href="/styles/style.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
 </head>
 <body>
 <main id="vueApp">
@@ -27,7 +28,14 @@
             <button v-on:click="submitTitle">Search</button>
         </article>
         <article class="results">
-            <div v-for="movie in movieFound" class="result">
+            <div class="changeOrder">
+                <div>Order by:</div>
+                <div>
+                    <button v-on:click="changeOrder('year')">Year <i v-show="orderOptions.showYear" v-bind:class="{'rotate': orderOptions.arrowDirection}" class="fa fa-angle-down" aria-hidden="true"></i></button>
+                    <button v-on:click="changeOrder('title')">Title <i v-show="orderOptions.showTitle" v-bind:class="{'rotate': orderOptions.arrowDirection}" class="fa fa-angle-down" aria-hidden="true"></i></button>
+                </div>
+            </div>
+            <div v-for="movie in movieFound | orderBy orderOptions.orderBy orderOptions.orderReverse" class="result">
                 <div class="moviePoster">
                     <div v-if="movie.unknownPoster">Unknown poster</div>
                     <img v-else v-bind:src="movie.poster" alt="movie poster"></div>

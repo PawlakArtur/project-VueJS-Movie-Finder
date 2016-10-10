@@ -4,7 +4,10 @@ $background_header: transparent;
 $background_searchTitle: transparent;
 $background_results: #f08f2a;
 $background_result: transparent;
+$background_button_alert: #d95100;
+
 $background_movieSelected: red;
+
 $font_bright: #ececec;
 $font_dark: #161616;
 
@@ -58,6 +61,31 @@ main {
       width: 50%;
       background: $background_results;
       padding: 10px;
+      .changeOrder {
+        text-align: right;
+        i {
+          transition: all 200ms;
+        }
+        .rotate {
+          transform: rotate(180deg);
+        }
+        div {
+            margin: 0 0 5px;
+        }
+        button {
+          cursor: pointer;
+          border-radius: 3px;
+          outline: none;
+          border: none;
+          background: $background_button_alert;
+          color: $font_bright;
+          padding: 5px 10px;
+          box-shadow: 3px 3px 1px 0px rgba(61,61,61,0.95);
+          &:active {
+            box-shadow: 2px 2px 1px 0px rgba(61, 61, 61, 0.95);
+          }
+        }
+      }
       .result {
         background: $background_result;
         margin: 0 0 5px;

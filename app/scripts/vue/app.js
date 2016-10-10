@@ -1,6 +1,15 @@
 var vueApp = new Vue({
     el: '#vueApp',
     data: {
+        // orderBy: 'year',
+        // orderReverse: 1,
+        orderOptions: {
+            orderBy: 'year',
+            orderReverse: 1,
+            showYear: true,
+            showTitle: false,
+            arrowDirection: false
+        },
         searchMovie: {
             title: '',
             year: '',
@@ -61,6 +70,22 @@ var vueApp = new Vue({
                     this.movies[this.movies.length - 1].unknownPoster = true;
                 }
             });
+        },
+        changeOrder: function(order) {
+            this.orderOptions.orderBy = order;
+            this.orderOptions.orderReverse = this.orderOptions.orderReverse * -1;
+            if(order === 'year') {
+                this.orderOptions.showYear = true;
+                this.orderOptions.showTitle = false;
+            } else {
+                this.orderOptions.showYear = false;
+                this.orderOptions.showTitle = true;
+            }
+            if(this.orderOptions.orderReverse === 1) {
+                this.orderOptions.arrowDirection = false;
+            } else {
+                this.orderOptions.arrowDirection = true;
+            }
         }
     }
 });
