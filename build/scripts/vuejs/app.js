@@ -1,14 +1,18 @@
 var vueApp = new Vue({
     el: '#vueApp',
     data: {
-        title: '',
+        searchMovie: {
+            title: '',
+            year: '',
+            type: ''
+        },
         movieFound: [],
         movies: []
     },
     methods: {
         submitTitle: function() {
             this.movieFound = [];
-            this.$http.get('http://www.omdbapi.com/?s=' + this.title).then(function(response) {
+            this.$http.get('http://www.omdbapi.com/?s=' + this.searchMovie.title + '&y=' + this.searchMovie.year + '&type=' + this.searchMovie.type).then(function(response) {
                 var data = response.body.Search;
                 for (var movie in data) {
                     this.movieFound.push({
@@ -19,8 +23,6 @@ var vueApp = new Vue({
                         poster: data[movie].Poster,
                         unknownPoster: false
                     });
-                }
-                for (var movie in this.movieFound) {
                     if(this.movieFound[movie].poster === "N/A") {
                         this.movieFound[movie].unknownPoster = true;
                     }
@@ -45,6 +47,7 @@ var vueApp = new Vue({
                     metascore: data.Metascore,
                     plot: data.Plot,
                     poster: data.Poster,
+                    unknownPoster: false,
                     rated: data.Rated,
                     released: data.Released,
                     runtime: data.Runtime,
@@ -54,6 +57,9 @@ var vueApp = new Vue({
                     imdbRating: data.imdbRating,
                     imdbVotes: data.imdbVotes
                 });
+                if(this.movies[this.movies.length - 1].poster === "N/A") {
+                    this.movies[this.movies.length - 1].unknownPoster = true;
+                }
             });
         }
     }

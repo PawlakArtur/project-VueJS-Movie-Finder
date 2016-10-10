@@ -2,22 +2,28 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Second vuejs app</title>
+    <title>Movie Finder</title>
     <link type="text/css" rel="stylesheet" href="/styles/normalize.min.css">
     <link type="text/css" rel="stylesheet" href="/styles/style.min.css">
 </head>
 <body>
-<nav>
-
-</nav>
 <main id="vueApp">
     <section class="movieDatabase">
         <header>
-            <h1>Baza filmów</h1>
+            <h1>Movie Finder</h1>
         </header>
         <article class="searchTitle">
-            <label for="title" >Tytuł</label>
-            <input value="hobbit" id="title" type="text" placeholder="Type movie title" v-model="title">
+            <label for="title" >Title</label>
+            <input value="harry potter" id="title" type="text" placeholder="Type movie title" v-model="searchMovie.title">
+            <label for="year" >Year</label>
+            <input id="year" type="text" placeholder="Type movie release date" v-model="searchMovie.year">
+            <label for="type">Type</label>
+            <select id="type" v-model="searchMovie.type">
+                <option value="movie" selected>movie</option>
+                <option value="series">series</option>
+                <option value="episode">episode</option>
+                <option value="game">game</option>
+            </select>
             <button v-on:click="submitTitle">Search</button>
         </article>
         <article class="results">
@@ -26,20 +32,19 @@
                     <div v-if="movie.unknownPoster">Unknown poster</div>
                     <img v-else v-bind:src="movie.poster" alt="movie poster"></div>
                 <div class="movieInfo">
-                    <div class="title"><span>Title:</span> {{movie.title}}</div>
+                    <div class="title"><span>Title:</span> {{movie.title}} ({{movie.year}})</div>
                     <div class="type"><span>Type:</span> {{movie.type}}</div>
-                    <div class="year"><span>Year:</span> {{movie.year}}</div>
+                    <div class="button"><button v-on:click="addMovie($event)" id="{{movie.id}}">Add movie to list</button></div>
                 </div>
-                <button v-on:click="addMovie($event)" id="{{movie.id}}">Add movie to list</button>
             </div>
         </article>
         <article class="movieSelected">
-            <div v-for="movie in movies">
+            <div v-for="movie in movies" class="selected">
                 <div class="moviePoster">
-                    <img v-bind:src="movie.poster" alt="movie poster">
-dasd
+                    <div v-if="movie.unknownPoster">Unknown poster</div>
+                    <img v-else v-bind:src="movie.poster" alt="movie poster">
+                </div>
                 <div class="movieInfo">
-                    <div class="movieInfo">
                         <div><span>Title:</span> {{movie.title}}</div>
                         <div><span>Plot:</span> {{movie.plot}}</div>
                         <div><span>Actors:</span> {{movie.actors}}</div>
@@ -53,13 +58,11 @@ dasd
                         <div><span>Rated:</span> {{movie.rated}}</div>
                         <div><span>Released:</span> {{movie.released}}</div>
                         <div><span>Runtime:</span> {{movie.runtime}}</div>
-                        <div><span>IMDB Rating:</span> {{movie.imsbRating}}</div>
-                        <div><span>IMDB Votes:</span> {{movie.imsbVotes}}</div>
+                        <div><span>IMDB Rating:</span> {{movie.imdbRating}}</div>
+                        <div><span>IMDB Votes:</span> {{movie.imdbVotes}}</div>
                         <div><span>Type:</span> {{movie.type}}</div>
                         <div><span>Released:</span> {{movie.released}}</div>
-                    </div>
                 </div>
-            </div>
             </div>
         </article>
     </section>

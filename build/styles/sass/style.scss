@@ -5,11 +5,16 @@ $background_searchTitle: transparent;
 $background_results: #f08f2a;
 $background_result: transparent;
 $background_movieSelected: red;
-$font_bright: #fff;
-$font_dark: #000;
+$font_bright: #ececec;
+$font_dark: #161616;
+
+* {
+  box-sizing: border-box;
+}
 
 body {
   background: $background_body;
+  color: $font_dark;
 }
 main {
   background: $background_main;
@@ -17,6 +22,21 @@ main {
   min-width: 800px;
   margin: 0 auto;
   padding: 10px;
+  .button {
+    button {
+      cursor: pointer;
+      border-radius: 3px;
+      outline: none;
+      border: none;
+      background: $background_body;
+      color: $font_bright;
+      padding: 10px 20px;
+      box-shadow: 3px 3px 1px 0px rgba(61,61,61,0.95);
+      &:active {
+        box-shadow: 2px 2px 1px 0px rgba(61, 61, 61, 0.95);
+      }
+    }
+  }
   .movieDatabase {
     header {
       padding: 10px;
@@ -34,6 +54,8 @@ main {
       }
     }
     .results {
+      display: inline-block;
+      width: 50%;
       background: $background_results;
       padding: 10px;
       .result {
@@ -44,21 +66,67 @@ main {
         .movieInfo {
           display: inline-block;
           vertical-align: top;
+          padding: 0 0 0 10px;
           div {
-            margin: 10px 0 0 0;
+            margin: 5px 0 0 0;
             padding: 5px;
           }
         }
         .moviePoster {
           display: inline-block;
+          overflow: hidden;
+          height: 160px;
+          width: 110px;
           img {
+            border-radius: 3px;
+            max-height: 150px;
+            box-shadow: 3px 3px 1px 0px rgba(0,0,0,0.75);
+          }
+          div {
+            color: $font_bright;
+            height: 150px;
+            width: 100px;
+            padding: 10px 0 0 10px;
+            background: #27274f;
+            border-radius: 3px;
             box-shadow: 3px 3px 1px 0px rgba(0,0,0,0.75);
           }
         }
       }
     }
     .movieSelected {
-      //background: $background_movieSelected;
+      display: inline-block;
+      width: 49%;
+      vertical-align: top;
+      padding: 5px;
+      background: $background_results;
+      .selected {
+        margin: 0 0 15px;
+        padding: 10px 0 10px 5px;
+        box-shadow: 0 5px 1px -5px rgba(0,0,0,.75);
+        //max-height: 170px;
+        overflow: hidden;
+
+        .movieInfo {
+          padding: 0 0 0 10px;
+          div {
+            margin: 5px 0 0 0;
+            padding: 5px;
+          }
+        }
+        .moviePoster {
+          float: left;
+          display: inline-block;
+          overflow: hidden;
+          height: 160px;
+          width: 115px;
+          img {
+            border-radius: 3px;
+            max-height: 150px;
+            box-shadow: 3px 3px 1px 0px rgba(0,0,0,0.75);
+          }
+        }
+      }
     }
   }
 }
