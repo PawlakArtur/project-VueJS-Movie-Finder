@@ -81,7 +81,7 @@ var vueApp = new Vue({
                 this.orderOptions.showYear = false;
                 this.orderOptions.showTitle = true;
             }
-            if(this.orderOptions.orderReverse === 1) {
+            if (this.orderOptions.orderReverse === 1) {
                 this.orderOptions.arrowDirection = false;
             } else {
                 this.orderOptions.arrowDirection = true;

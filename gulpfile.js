@@ -8,6 +8,8 @@ var sass = require('gulp-sass');
 var del = require('del');
 var browserSync = require('browser-sync').create();
 var runSequence = require('run-sequence');
+var csslint = require('gulp-csslint');
+var sassLint = require('gulp-sass-lint');
 
 // configuration
 var paths = {
@@ -53,6 +55,21 @@ gulp.task('sass', function() {
         .pipe(cssmin())
         .pipe(rename('style.min.css'))
         .pipe(gulp.dest('app/styles'))
+        .pipe(browserSync.stream());
+});
+
+// gulp.task('csslint', function() {
+//     gulp.src(paths.css)
+//         .pipe(csslint())
+//         .pipe(csslint.formatter())
+//         .pipe(browserSync.stream());
+// });
+
+gulp.task('sasslint', function () {
+    return gulp.src(paths.sass)
+        .pipe(sassLint())
+        .pipe(sassLint.format())
+        .pipe(sassLint.failOnError())
         .pipe(browserSync.stream());
 });
 
