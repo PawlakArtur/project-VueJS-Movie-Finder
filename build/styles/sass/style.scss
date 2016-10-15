@@ -133,9 +133,9 @@ main {
         margin: 0 0 15px;
         padding: 10px 0 10px 5px;
         overflow: hidden;
-        box-shadow: 0 5px 1px -5px rgba(0, 0, 0, .75);
         .movieInfo {
           padding: 0 0 0 10px;
+          overflow: hidden;
           div {
             margin: 5px 0 0;
             padding: 5px;
@@ -152,8 +152,22 @@ main {
             box-shadow: 3px 3px 1px 0 rgba(0, 0, 0, .75);
             max-height: 150px;
           }
+          div {
+            color: $font-bright;
+            width: 100px;
+            height: 150px;
+            padding: 10px 0 0 10px;
+            background: #27274f;
+            border-radius: 3px;
+            box-shadow: 3px 3px 1px 0 rgba(0, 0, 0, .75);
+          }
         }
       }
+    }
+    .movieSaved {
+      display: inline-block;
+      padding: 5px;
+      background: $background-results;
     }
   }
 }

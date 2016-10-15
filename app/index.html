@@ -35,48 +35,50 @@
                     <button v-on:click="changeOrder('title')">Title <i v-show="orderOptions.showTitle" v-bind:class="{'rotate': orderOptions.arrowDirection}" class="fa fa-angle-down" aria-hidden="true"></i></button>
                 </div>
             </div>
-            <div v-for="movie in movieFound | orderBy orderOptions.orderBy orderOptions.orderReverse" class="result">
+            <div v-for="movies in moviesFound | orderBy orderOptions.orderBy orderOptions.orderReverse" class="result">
                 <div class="moviePoster">
-                    <div v-if="movie.unknownPoster">Unknown poster</div>
-                    <img v-else v-bind:src="movie.poster" alt="movie poster"></div>
+                    <div v-if="movies.unknownPoster">Unknown poster</div>
+                    <img v-else v-bind:src="movies.poster" alt="movie poster"></div>
                 <div class="movieInfo">
-                    <div class="title"><span>Title:</span> {{movie.title}} ({{movie.year}})</div>
-                    <div class="type"><span>Type:</span> {{movie.type}}</div>
-                    <div class="button"><button v-on:click="addMovie($event)" id="{{movie.id}}">Add movie to list</button></div>
+                    <div class="title"><span>Title:</span> {{movies.title}} ({{movies.year}})</div>
+                    <div class="type"><span>Type:</span> {{movies.type}}</div>
+                    <!--<div class="button"><button v-on:click="addMovie($event)" id="{{movie.id}}">Add movie to list</button></div>-->
+                    <div class="button"><button v-on:click="showDetails($event)" id="{{movies.id}}">Show details</button></div>
                 </div>
             </div>
         </article>
         <article class="movieSelected">
-            <div v-for="movie in movies" class="selected">
+            <div class="selected" v-if="movieSelect">
                 <div class="moviePoster">
                     <div v-if="movie.unknownPoster">Unknown poster</div>
                     <img v-else v-bind:src="movie.poster" alt="movie poster">
                 </div>
                 <div class="movieInfo">
-                        <div><span>Title:</span> {{movie.title}}</div>
-                        <div><span>Plot:</span> {{movie.plot}}</div>
-                        <div><span>Actors:</span> {{movie.actors}}</div>
-                        <div><span>Writer:</span> {{movie.writer}}</div>
-                        <div><span>Awards:</span> {{movie.awards}}</div>
-                        <div><span>Country:</span> {{movie.country}}</div>
-                        <div><span>Director:</span> {{movie.director}}</div>
-                        <div><span>Genre:</span> {{movie.genre}}</div>
-                        <div><span>Language:</span> {{movie.language}}</div>
-                        <div><span>Metascore:</span> {{movie.metascore}}</div>
-                        <div><span>Rated:</span> {{movie.rated}}</div>
-                        <div><span>Released:</span> {{movie.released}}</div>
-                        <div><span>Runtime:</span> {{movie.runtime}}</div>
-                        <div><span>IMDB Rating:</span> {{movie.imdbRating}}</div>
-                        <div><span>IMDB Votes:</span> {{movie.imdbVotes}}</div>
-                        <div><span>Type:</span> {{movie.type}}</div>
-                        <div><span>Released:</span> {{movie.released}}</div>
+                    <div><span>Title:</span> {{movie.title}}</div>
+                    <div><span>Plot:</span> {{movie.plot}}</div>
+                    <div><span>Actors:</span> {{movie.actors}}</div>
+                    <div><span>Writer:</span> {{movie.writer}}</div>
+                    <div><span>Awards:</span> {{movie.awards}}</div>
+                    <div><span>Country:</span> {{movie.country}}</div>
+                    <div><span>Director:</span> {{movie.director}}</div>
+                    <div><span>Genre:</span> {{movie.genre}}</div>
+                    <div><span>Language:</span> {{movie.language}}</div>
+                    <div><span>Metascore:</span> {{movie.metascore}}</div>
+                    <div><span>Rated:</span> {{movie.rated}}</div>
+                    <div><span>Released:</span> {{movie.released}}</div>
+                    <div><span>Runtime:</span> {{movie.runtime}}</div>
+                    <div><span>IMDB Rating:</span> {{movie.imdbRating}}</div>
+                    <div><span>IMDB Votes:</span> {{movie.imdbVotes}}</div>
+                    <div><span>Type:</span> {{movie.type}}</div>
                 </div>
+                <input v-on:click="saveMovie" type="button" value="Save movie">
             </div>
         </article>
     </section>
 </main>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.27/vue.min.js"></script>
 <script src="https://cdn.jsdelivr.net/vue.resource/1.0.3/vue-resource.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue-router/0.7.10/vue-router.min.js"></script>
 <script type="text/javascript" src="scripts/vue/app.js"></script>
 </body>
 </html>
