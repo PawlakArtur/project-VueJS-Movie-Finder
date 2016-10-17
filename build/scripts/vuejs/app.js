@@ -1,30 +1,172 @@
-var vueApp = new Vue({
-    el: '#vueApp',
-    data: {
-        orderOptions: {
-            orderBy: 'year',
-            orderReverse: 1,
-            showYear: true,
-            showTitle: false,
-            arrowDirection: false
-        },
-        searchMovie: {
-            title: '',
-            year: '',
-            type: ''
-        },
-        moviesFound: [],
-        movie: {},
-        movieSelect: false,
-        savedMovies: [],
+// var vueApp = new Vue({
+//     el: '#vueApp',
+//     data: {
+//         orderOptions: {
+//             orderBy: 'year',
+//             orderReverse: 1,
+//             showYear: true,
+//             showTitle: false,
+//             arrowDirection: false
+//         },
+//         searchMovie: {
+//             title: '',
+//             year: '',
+//             type: ''
+//         },
+//         moviesFound: [],
+//         movie: {},
+//         movieSelect: false,
+//         savedMovies: [],
+//     },
+//     methods: {
+//         submitTitle: function() {
+//             this.moviesFound = [];
+//             this.$http.get('http://www.omdbapi.com/?s=' + this.searchMovie.title + '&y=' + this.searchMovie.year + '&type=' + this.searchMovie.type).then(function(response) {
+//                 var data = response.body.Search;
+//                 for (var movie in data) {
+//                     this.moviesFound.push({
+//                         id: data[movie].imdbID,
+//                         title: data[movie].Title,
+//                         type: data[movie].Type,
+//                         year: data[movie].Year,
+//                         poster: data[movie].Poster,
+//                         unknownPoster: false
+//                     });
+//                     if(this.moviesFound[movie].poster === "N/A") {
+//                         this.moviesFound[movie].unknownPoster = true;
+//                     }
+//                 }
+//             }, function(response) {
+//                 console.log("errors!")
+//             });
+//         },
+//         showDetails: function(event) {
+//             movieId = event.currentTarget.id;
+//             this.$http.get('http://www.omdbapi.com/?i=' + movieId).then(function(response) {
+//                 var data = response.body;
+//                 this.movie = {
+//                     id: data.imdbID,
+//                     title: data.Title,
+//                     actors: data.Actors,
+//                     awards: data.Awards,
+//                     country: data.Country,
+//                     director: data.Director,
+//                     genre: data.Genre,
+//                     language: data.Language,
+//                     metascore: data.Metascore,
+//                     plot: data.Plot,
+//                     poster: data.Poster,
+//                     unknownPoster: false,
+//                     rated: data.Rated,
+//                     released: data.Released,
+//                     runtime: data.Runtime,
+//                     type: data.Type,
+//                     writer: data.Writer,
+//                     year: data.Year,
+//                     imdbRating: data.imdbRating,
+//                     imdbVotes: data.imdbVotes
+//                 };
+//                 if(this.movie.poster === "N/A") {
+//                     this.movie.unknownPoster = true;
+//                 }
+//                 this.movieSelect = true;
+//             });
+//         },
+//         changeOrder: function(order) {
+//             this.orderOptions.orderBy = order;
+//             this.orderOptions.orderReverse = this.orderOptions.orderReverse * -1;
+//             if(order === 'year') {
+//                 this.orderOptions.showYear = true;
+//                 this.orderOptions.showTitle = false;
+//             } else {
+//                 this.orderOptions.showYear = false;
+//                 this.orderOptions.showTitle = true;
+//             }
+//             if (this.orderOptions.orderReverse === 1) {
+//                 this.orderOptions.arrowDirection = false;
+//             } else {
+//                 this.orderOptions.arrowDirection = true;
+//             }
+//         },
+//         saveMovie: function () {
+//             this.savedMovies.push({
+//                 id: this.movie.id,
+//                 title: this.movie.title,
+//                 actors: this.movie.actors,
+//                 awards: this.movie.awards,
+//                 country: this.movie.country,
+//                 director: this.movie.director,
+//                 genre: this.movie.genre,
+//                 language: this.movie.language,
+//                 metascore: this.movie.metascore,
+//                 plot: this.movie.plot,
+//                 poster: this.movie.poster,
+//                 unknownPoster: this.movie.unknownPoster,
+//                 rated: this.movie.rated,
+//                 released: this.movie.released,
+//                 runtime: this.movie.runtime,
+//                 type: this.movie.type,
+//                 writer: this.movie.writer,
+//                 year: this.movie.year,
+//                 imdbRating: this.movie.imdbRating,
+//                 imdbVotes: this.movie.imdbVotes
+//             });
+//             console.log(this.savedMovies);
+//             this.$http.post('/sendMovie', this.savedMovies).then(function(response) {
+//                 console.log(response.body)
+//
+//                 this.$http.get('/getMovie').then(function(response) {
+//                     console.log(response.body);
+//                     var data = JSON.parse(response.body);
+//                     console.log(data);
+//                     this.savedMovies = data.savedMovies;
+//                 }, function(response) {
+//                     console.log("errors!")
+//                 });
+//
+//             }, function(response) {
+//                 console.log("errors!")
+//             });
+//         }
+//     }
+// });
+
+var searchMovies = {
+    state: {
+        movie: []
+    }
+};
+
+var searchComponent = Vue.extend({
+    template:   '<label for="title">Title</label>' +
+                '<input value="harry potter" id="title" type="text" placeholder="Type movie title" v-model="searchMovie.title">' +
+                '<label for="year" >Year</label>' +
+                '<input id="year" type="text" placeholder="Type movie release date" v-model="searchMovie.year">' +
+                '<label for="type">Type</label>' +
+                '<select id="type" v-model="searchMovie.type">' +
+                    '<option value="movie" selected>movie</option>' +
+                    '<option value="series">series</option>' +
+                    '<option value="episode">episode</option>' +
+                    '<option value="game">game</option>' +
+                '</select>' +
+                '<button v-on:click.prevent="searchTitle">Search</button>',
+    data: function () {
+        return {
+            searchMovie: {
+                title: '',
+                year: '',
+                type: ''
+            },
+            moviesFound:  searchMovies.state
+        }
     },
     methods: {
-        submitTitle: function() {
-            this.moviesFound = [];
+        searchTitle: function () {
+            this.moviesFound.movie = [];
             this.$http.get('http://www.omdbapi.com/?s=' + this.searchMovie.title + '&y=' + this.searchMovie.year + '&type=' + this.searchMovie.type).then(function(response) {
                 var data = response.body.Search;
                 for (var movie in data) {
-                    this.moviesFound.push({
+                    this.moviesFound.movie.push({
                         id: data[movie].imdbID,
                         title: data[movie].Title,
                         type: data[movie].Type,
@@ -32,84 +174,77 @@ var vueApp = new Vue({
                         poster: data[movie].Poster,
                         unknownPoster: false
                     });
-                    if(this.moviesFound[movie].poster === "N/A") {
-                        this.moviesFound[movie].unknownPoster = true;
+                    if(this.moviesFound.movie[movie].poster === "N/A") {
+                        this.moviesFound.movie[movie].unknownPoster = true;
                     }
                 }
             }, function(response) {
-                console.log("errors!")
+                console.log("errors!");
             });
-        },
-        addMovie: function(event) {
-            movieId = event.currentTarget.id;
-            this.$http.get('http://www.omdbapi.com/?i=' + movieId).then(function(response) {
-                var data = response.body;
-                this.movie.push({
-                    id: data.imdbID,
-                    title: data.Title,
-                    actors: data.Actors,
-                    awards: data.Awards,
-                    country: data.Country,
-                    director: data.Director,
-                    genre: data.Genre,
-                    language: data.Language,
-                    metascore: data.Metascore,
-                    plot: data.Plot,
-                    poster: data.Poster,
-                    unknownPoster: false,
-                    rated: data.Rated,
-                    released: data.Released,
-                    runtime: data.Runtime,
-                    type: data.Type,
-                    writer: data.Writer,
-                    year: data.Year,
-                    imdbRating: data.imdbRating,
-                    imdbVotes: data.imdbVotes
-                });
-                if(this.movie[this.movie.length - 1].poster === "N/A") {
-                    this.movie[this.movie.length - 1].unknownPoster = true;
-                }
-            });
-        },
-        showDetails: function(event) {
-            movieId = event.currentTarget.id;
-            this.$http.get('http://www.omdbapi.com/?i=' + movieId).then(function(response) {
-                var data = response.body;
-                this.movie = {
-                    id: data.imdbID,
-                    title: data.Title,
-                    actors: data.Actors,
-                    awards: data.Awards,
-                    country: data.Country,
-                    director: data.Director,
-                    genre: data.Genre,
-                    language: data.Language,
-                    metascore: data.Metascore,
-                    plot: data.Plot,
-                    poster: data.Poster,
-                    unknownPoster: false,
-                    rated: data.Rated,
-                    released: data.Released,
-                    runtime: data.Runtime,
-                    type: data.Type,
-                    writer: data.Writer,
-                    year: data.Year,
-                    imdbRating: data.imdbRating,
-                    imdbVotes: data.imdbVotes
-                };
-                if(this.movie.poster === "N/A") {
-                    this.movie.unknownPoster = true;
-                }
-                this.movieSelect = true;
-            });
-        },
+        }
+    }
+});
+
+var resultOrderComponent = Vue.extend({
+    props: ['type', 'direction', 'showYear', 'showTitle', 'show'],
+    template:   '<button v-on:click="changeOrder(type)">{{type}} ' +
+                    '<i v-show="show == type" v-bind:class="{rotate: direction}" class="fa fa-angle-down" aria-hidden="true"></i>' +
+                '</button>',
+    methods: {
+        changeOrder: function (type) {
+            this.$dispatch('changeOrder', type);
+        }
+    }
+});
+
+var resultComponent = Vue.extend({
+    template:   '<div class="changeOrder">' +
+                    '<div>Order by:</div>' +
+                    '<div>' +
+                    //     '<button v-on:click.prevent="changeOrder(year)">Year <i v-show="orderOptions.showYear" v-bind:class="{rotate: orderOptions.arrowDirection}" class="fa fa-angle-down" aria-hidden="true"></i></button>' +
+                    //     '<button v-on:click.prevent="changeOrder(title)">Title <i v-show="orderOptions.showTitle" v-bind:class="{rotate: orderOptions.arrowDirection}" class="fa fa-angle-down" aria-hidden="true"></i></button>' +
+                        '<order-year type="year" v-bind:direction="orderOptions.arrowDirection" v-bind:show="orderOptions.show"></order-year>' +
+                        '<order-title type="title" v-bind:direction="orderOptions.arrowDirection" v-bind:show="orderOptions.show" v-bind:show-year="orderOptions.showYear" v-bind:show-title="orderOptions.showTitle"></order-title>' +
+                    '</div>' +
+                '</div>' +
+                '<div v-for="movies in moviesFound.movie | orderBy orderOptions.orderBy orderOptions.orderReverse" class="result">' +
+                    '<div class="moviePoster">' +
+                        '<div v-if="movies.unknownPoster">Unknown poster</div>' +
+                        '<img v-else v-bind:src="movies.poster" alt="movie poster">' +
+                    '</div>' +
+                    '<div class="movieInfo">' +
+                        '<div class="title"><span>Title:</span> {{movies.title}} ({{movies.year}})</div>' +
+                        '<div class="type"><span>Type:</span> {{movies.type}}</div>' +
+                        '<div class="button"><button v-on:click.prevent="showDetails($event)" id="{{movies.id}}">Show details</button></div>' +
+                    '</div>' +
+                '</div>',
+    components: {
+        'order-year': resultOrderComponent,
+        'order-title': resultOrderComponent
+    },
+    data: function () {
+        return {
+            moviesFound: searchMovies.state,
+            orderOptions: {
+                orderBy: 'year',
+                orderReverse: 1,
+                showYear: true,
+                showTitle: false,
+                show: 'year',
+                arrowDirection: false
+            },
+        }
+    },
+    events: {
         changeOrder: function(order) {
             this.orderOptions.orderBy = order;
             this.orderOptions.orderReverse = this.orderOptions.orderReverse * -1;
             if(order === 'year') {
+                this.orderOptions.show = 'year';
                 this.orderOptions.showYear = true;
                 this.orderOptions.showTitle = false;
             } else {
+                this.orderOptions.show = 'title';
                 this.orderOptions.showYear = false;
                 this.orderOptions.showTitle = true;
             }
@@ -118,36 +253,14 @@ var vueApp = new Vue({
             } else {
                 this.orderOptions.arrowDirection = true;
             }
-        },
-        saveMovie: function () {
-            this.savedMovies.push({
-                id: this.movie.id,
-                title: this.movie.title,
-                actors: this.movie.actors,
-                awards: this.movie.awards,
-                country: this.movie.country,
-                director: this.movie.director,
-                genre: this.movie.genre,
-                language: this.movie.language,
-                metascore: this.movie.metascore,
-                plot: this.movie.plot,
-                poster: this.movie.poster,
-                unknownPoster: this.movie.unknownPoster,
-                rated: this.movie.rated,
-                released: this.movie.released,
-                runtime: this.movie.runtime,
-                type: this.movie.type,
-                writer: this.movie.writer,
-                year: this.movie.year,
-                imdbRating: this.movie.imdbRating,
-                imdbVotes: this.movie.imdbVotes
-            });
-            console.log(this.savedMovies);
-            this.$http.post('/sendMovie', this.savedMovies).then(function(response) {
-                console.log(response.body)
-            }, function(response) {
-                console.log("errors!")
-            });
         }
+    }
+});
+
+var app = new Vue({
+    "el": "#app",
+    components: {
+        'search-component': searchComponent,
+        'result-component': resultComponent
     }
 });
