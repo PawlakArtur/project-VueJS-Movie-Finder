@@ -133,7 +133,10 @@
 
 var searchMovies = {
     state: {
-        movie: []
+        movie: [],
+        movieDetail: {},
+        movieSelect: false,
+        savedMovies: []
     }
 };
 
@@ -157,13 +160,13 @@ var searchComponent = Vue.extend({
                 year: '',
                 type: ''
             },
-            moviesFound:  searchMovies.state
+            moviesFound: searchMovies.state
         }
     },
     methods: {
         searchTitle: function () {
             this.moviesFound.movie = [];
-            this.$http.get('http://www.omdbapi.com/?s=' + this.searchMovie.title + '&y=' + this.searchMovie.year + '&type=' + this.searchMovie.type).then(function(response) {
+            this.$http.get('http://www.omdbapi.com/?s=' + this.searchMovie.title + '&y=' + this.searchMovie.year + '&type=' + this.searchMovie.type).then(function (response) {
                 var data = response.body.Search;
                 for (var movie in data) {
                     this.moviesFound.movie.push({
@@ -174,11 +177,11 @@ var searchComponent = Vue.extend({
                         poster: data[movie].Poster,
                         unknownPoster: false
                     });
-                    if(this.moviesFound.movie[movie].poster === "N/A") {
+                    if (this.moviesFound.movie[movie].poster === "N/A") {
                         this.moviesFound.movie[movie].unknownPoster = true;
                     }
                 }
-            }, function(response) {
+            }, function (response) {
                 console.log("errors!");
             });
         }
@@ -200,22 +203,21 @@ var resultOrderComponent = Vue.extend({
 var resultComponent = Vue.extend({
     template:   '<div class="changeOrder">' +
                     '<div>Order by:</div>' +
-                    '<div>' +
-                    //     '<button v-on:click.prevent="changeOrder(year)">Year <i v-show="orderOptions.showYear" v-bind:class="{rotate: orderOptions.arrowDirection}" class="fa fa-angle-down" aria-hidden="true"></i></button>' +
-                    //     '<button v-on:click.prevent="changeOrder(title)">Title <i v-show="orderOptions.showTitle" v-bind:class="{rotate: orderOptions.arrowDirection}" class="fa fa-angle-down" aria-hidden="true"></i></button>' +
-                        '<order-year type="year" v-bind:direction="orderOptions.arrowDirection" v-bind:show="orderOptions.show"></order-year>' +
-                        '<order-title type="title" v-bind:direction="orderOptions.arrowDirection" v-bind:show="orderOptions.show" v-bind:show-year="orderOptions.showYear" v-bind:show-title="orderOptions.showTitle"></order-title>' +
+                        '<div>' +
+                            '<order-year type="year" v-bind:direction="orderOptions.arrowDirection" v-bind:show="orderOptions.show"></order-year>' +
+                            '<order-title type="title" v-bind:direction="orderOptions.arrowDirection" v-bind:show="orderOptions.show" v-bind:show-year="orderOptions.showYear" v-bind:show-title="orderOptions.showTitle"></order-title>' +
+                        '</div>' +
                     '</div>' +
-                '</div>' +
-                '<div v-for="movies in moviesFound.movie | orderBy orderOptions.orderBy orderOptions.orderReverse" class="result">' +
-                    '<div class="moviePoster">' +
-                        '<div v-if="movies.unknownPoster">Unknown poster</div>' +
-                        '<img v-else v-bind:src="movies.poster" alt="movie poster">' +
-                    '</div>' +
-                    '<div class="movieInfo">' +
-                        '<div class="title"><span>Title:</span> {{movies.title}} ({{movies.year}})</div>' +
-                        '<div class="type"><span>Type:</span> {{movies.type}}</div>' +
-                        '<div class="button"><button v-on:click.prevent="showDetails($event)" id="{{movies.id}}">Show details</button></div>' +
+                    '<div v-for="movies in moviesFound.movie | orderBy orderOptions.orderBy orderOptions.orderReverse" class="result">' +
+                        '<div class="moviePoster">' +
+                            '<div v-if="movies.unknownPoster">Unknown poster</div>' +
+                            '<img v-else v-bind:src="movies.poster" alt="movie poster">' +
+                        '</div>' +
+                        '<div class="movieInfo">' +
+                            '<div class="title"><span>Title:</span> {{movies.title}} ({{movies.year}})</div>' +
+                            '<div class="type"><span>Type:</span> {{movies.type}}</div>' +
+                            '<div class="button"><button v-on:click.prevent="showDetails($event)" id="{{movies.id}}">Show details</button>' +
+                        '</div>' +
                     '</div>' +
                 '</div>',
     components: {
@@ -233,13 +235,15 @@ var resultComponent = Vue.extend({
                 show: 'year',
                 arrowDirection: false
             },
+            movieDetail: searchMovies.state,
+            movieSelect: searchMovies.state
         }
     },
     events: {
-        changeOrder: function(order) {
+        changeOrder: function (order) {
             this.orderOptions.orderBy = order;
             this.orderOptions.orderReverse = this.orderOptions.orderReverse * -1;
-            if(order === 'year') {
+            if (order === 'year') {
                 this.orderOptions.show = 'year';
                 this.orderOptions.showYear = true;
                 this.orderOptions.showTitle = false;
@@ -254,6 +258,118 @@ var resultComponent = Vue.extend({
                 this.orderOptions.arrowDirection = true;
             }
         }
+    },
+    methods: {
+        showDetails: function (event) {
+            movieId = event.currentTarget.id;
+            this.$http.get('http://www.omdbapi.com/?i=' + movieId).then(function (response) {
+                var data = response.body;
+                this.movieDetail.movieDetail = {
+                    id: data.imdbID,
+                    title: data.Title,
+                    actors: data.Actors,
+                    awards: data.Awards,
+                    country: data.Country,
+                    director: data.Director,
+                    genre: data.Genre,
+                    language: data.Language,
+                    metascore: data.Metascore,
+                    plot: data.Plot,
+                    poster: data.Poster,
+                    unknownPoster: false,
+                    rated: data.Rated,
+                    released: data.Released,
+                    runtime: data.Runtime,
+                    type: data.Type,
+                    writer: data.Writer,
+                    year: data.Year,
+                    imdbRating: data.imdbRating,
+                    imdbVotes: data.imdbVotes
+                };
+                if (this.movieDetail.movieDetail.poster === "N/A") {
+                    this.movieDetail.movieDetail.unknownPoster = true;
+                }
+                this.movieSelect.movieSelect = true;
+            });
+        }
+    }
+});
+
+var detailComponent = Vue.extend({
+    template:   '<div class="selected" v-if="movieSelect.movieSelect">' +
+                    '<div class="moviePoster">' +
+                        '<div v-if="movieDetail.movieDetail.unknownPoster">Unknown poster</div>' +
+                        '<img v-else v-bind:src="movieDetail.movieDetail.poster" alt="movie poster">' +
+                    '</div>' +
+                    '<div class="movieInfo">' +
+                        '<div><span>Title:</span> {{movieDetail.movieDetail.title}}</div>' +
+                            '<div><span>Plot:</span> {{movieDetail.movieDetail.plot}}</div>' +
+                            '<div><span>Actors:</span> {{movieDetail.movieDetail.actors}}</div>' +
+                            '<div><span>Writer:</span> {{movieDetail.movieDetail.writer}}</div>' +
+                            '<div><span>Awards:</span> {{movieDetail.movieDetail.awards}}</div>' +
+                            '<div><span>Country:</span> {{movieDetail.movieDetail.country}}</div>' +
+                            '<div><span>Director:</span> {{movieDetail.movieDetail.director}}</div>' +
+                            '<div><span>Genre:</span> {{movieDetail.movieDetail.genre}}</div>' +
+                            '<div><span>Language:</span> {{movieDetail.movieDetail.language}}</div>' +
+                            '<div><span>Metascore:</span> {{movieDetail.movieDetail.metascore}}</div>' +
+                            '<div><span>Rated:</span> {{movieDetail.movieDetail.rated}}</div>' +
+                            '<div><span>Released:</span> {{movieDetail.movieDetail.released}}</div>' +
+                            '<div><span>Runtime:</span> {{movieDetail.movieDetail.runtime}}</div>' +
+                            '<div><span>IMDB Rating:</span> {{movieDetail.movieDetail.imdbRating}}</div>' +
+                            '<div><span>IMDB Votes:</span> {{movieDetail.movieDetail.imdbVotes}}</div>' +
+                            '<div><span>Type:</span> {{movieDetail.movieDetail.type}}</div>' +
+                        '</div>' +
+                        '<input v-on:click.prevent="saveMovie" type="button" value="Save movie">' +
+                    '</div>',
+    data: function () {
+        return {
+            movieDetail: searchMovies.state,
+            movieSelect: searchMovies.state,
+            savedMovies: searchMovies.state,
+            getMovies: []
+        }
+    },
+    methods: {
+        saveMovie: function () {
+            this.savedMovies.savedMovies.push({
+                id: this.movieDetail.movieDetail.id,
+                title: this.movieDetail.movieDetail.title,
+                actors: this.movieDetail.movieDetail.actors,
+                awards: this.movieDetail.movieDetail.awards,
+                country: this.movieDetail.movieDetail.country,
+                director: this.movieDetail.movieDetail.director,
+                genre: this.movieDetail.movieDetail.genre,
+                language: this.movieDetail.movieDetail.language,
+                metascore: this.movieDetail.movieDetail.metascore,
+                plot: this.movieDetail.movieDetail.plot,
+                poster: this.movieDetail.movieDetail.poster,
+                unknownPoster: this.movieDetail.movieDetail.unknownPoster,
+                rated: this.movieDetail.movieDetail.rated,
+                released: this.movieDetail.movieDetail.released,
+                runtime: this.movieDetail.movieDetail.runtime,
+                type: this.movieDetail.movieDetail.type,
+                writer: this.movieDetail.movieDetail.writer,
+                year: this.movieDetail.movieDetail.year,
+                imdbRating: this.movieDetail.movieDetail.imdbRating,
+                imdbVotes: this.movieDetail.movieDetail.imdbVotes
+            });
+            console.log(this.savedMovies.savedMovies);
+            this.$http.post('/sendMovie', this.savedMovies.savedMovies).then(function (response) {
+                console.log(response.body);
+            }, function (response) {
+                console.log("errors!")
+            });
+        }
+    },
+    created: function () {
+        this.$http.get('/getMovie').then(function (response) {
+            //console.log(response.body);
+            var data = JSON.parse(response.body);
+            //console.log(data);
+            this.savedMovies.savedMovies = data.savedMovies;
+        }, function (response) {
+            console.log("errors!")
+        });
     }
 });
 
@@ -261,6 +377,7 @@ var app = new Vue({
     "el": "#app",
     components: {
         'search-component': searchComponent,
-        'result-component': resultComponent
+        'result-component': resultComponent,
+        'detail-component': detailComponent
     }
 });
