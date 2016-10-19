@@ -131,6 +131,8 @@
 //     }
 // });
 
+Vue.use(VueRouter);
+
 var searchMovies = {
     state: {
         movie: [],
@@ -139,6 +141,15 @@ var searchMovies = {
         savedMovies: []
     }
 };
+
+var menuComponent = Vue.extend({
+    template:   '<nav>' +
+                    '<ul>' +
+                        '<li><a v-link="{ path: \'/\' }">Database</a></li>' +
+                        '<li><a v-link="{ path: \'/library\' }">Your Library</a></li>' +
+                    '</ul>' +
+                '</nav>'
+});
 
 var searchComponent = Vue.extend({
     template:   '<label for="title">Title</label>' +
@@ -373,11 +384,92 @@ var detailComponent = Vue.extend({
     }
 });
 
-var app = new Vue({
-    "el": "#app",
+var databaseComponent = Vue.extend({
+    template:   '<section class="movieDatabase">' +
+                    '<article class="searchTitle">' +
+                        '<search-component></search-component>' +
+                    '</article>' +
+                    '<article class="results">' +
+                        '<result-component></result-component>' +
+                    '</article>' +
+                    '<article class="movieSelected">' +
+                        '<detail-component></detail-component>' +
+                    '</article>' +
+                '</section>',
     components: {
         'search-component': searchComponent,
         'result-component': resultComponent,
         'detail-component': detailComponent
     }
 });
+
+var libraryListComponent = Vue.extend({
+    template:   '<div>Your movies:</div>' +
+                '<ul>' +
+                    '<li v-for="movie in savedMovies.savedMovies">' +
+                        '{{movie.title}}' +
+                    '</li>' +
+                '</ul>',
+    data: function () {
+        return {
+            savedMovies: searchMovies.state
+        }
+    },
+    created: function () {
+        this.$http.get('/getMovie').then(function (response) {
+            //console.log(response.body);
+            var data = JSON.parse(response.body);
+            //console.log(data);
+            this.savedMovies.savedMovies = data.savedMovies;
+            for(var i = 0; i < this.savedMovies.savedMovies.length; i++) {
+                console.log(this.savedMovies.savedMovies[i].title);
+            }
+        }, function (response) {
+            console.log("errors!")
+        });
+    }
+});
+
+var libraryComponent = Vue.extend({
+    template:   '<section class="library">' +
+                    '<article class="list-library">' +
+                        '<library-list-component></library-list-component>' +
+                    '</article>' +
+                '</section>',
+    components: {
+        'library-list-component': libraryListComponent
+    }
+});
+
+// var app = new Vue({
+//     "el": "#app",
+//     components: {
+//         'search-component': searchComponent,
+//         'result-component': resultComponent,
+//         'detail-component': detailComponent
+//     }
+// });
+
+var App = {
+    components: {
+        'menu-component': menuComponent,
+        // 'search-component': searchComponent,
+        // 'result-component': resultComponent,
+        // 'detail-component': detailComponent
+    }
+};
+
+var router = new VueRouter({
+    root: '/'
+});
+
+router.map({
+    '/': {
+        component: databaseComponent
+    },
+    '/library': {
+        component: libraryComponent
+    }
+})
+
+router.start(App, '#app');

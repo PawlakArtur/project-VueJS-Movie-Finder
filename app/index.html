@@ -7,7 +7,7 @@
     <link type="text/css" rel="stylesheet" href="/styles/style.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
 </head>
-<body>
+<body id="app">
 <!--<main id="vueApp">-->
     <!--<section class="movieDatabase">-->
         <!--<header>-->
@@ -80,21 +80,28 @@
         <!--</article>-->
     <!--</section>-->
 <!--</main>-->
-<main id="app">
-    <section class="movieDatabase">
-        <header>
-            <h1>Movie Finder</h1>
-        </header>
-        <article class="searchTitle">
-            <search-component></search-component>
-        </article>
-        <article class="results">
-            <result-component></result-component>
-        </article>
-        <article class="movieSelected">
-            <detail-component></detail-component>
-        </article>
-    </section>
+
+<header>
+    <h1>Movie Finder</h1>
+</header>
+<menu-component></menu-component>
+<main>
+
+    <router-view></router-view>
+    <!--<section class="movieDatabase">-->
+        <!--<header>-->
+            <!--<h1>Movie Finder</h1>-->
+        <!--</header>-->
+        <!--<article class="searchTitle">-->
+            <!--<search-component></search-component>-->
+        <!--</article>-->
+        <!--<article class="results">-->
+            <!--<result-component></result-component>-->
+        <!--</article>-->
+        <!--<article class="movieSelected">-->
+            <!--<detail-component></detail-component>-->
+        <!--</article>-->
+    <!--</section>-->
 </main>
 
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.27/vue.js"></script>

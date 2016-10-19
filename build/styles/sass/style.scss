@@ -1,15 +1,28 @@
+$main-background: #f7b32b;
+$second-background: #f08f2a;
+
 $background-body: #2d1e2f;
-$background-main: #f7b32b;
-$background-header: transparent;
+$background-header: $main-background;
+$background-navbar: $main-background;
+$background-main: $main-background;
 $background-search-title: transparent;
-$background-results: #f08f2a;
+$background-results: $second-background;
 $background-result: transparent;
+$background-library-list: $second-background;
+
 $background-button-alert: #d95100;
 
 $background-movie-selected: #ff0000;
 
 $font-bright: #ececec;
 $font-dark: #161616;
+
+.width-of-page {
+  margin: 0 auto;
+  min-width: 800px;
+  padding: 10px;
+  width: 70%;
+}
 
 * {
   box-sizing: border-box;
@@ -20,12 +33,57 @@ body {
   color: $font-dark;
 }
 
+header {
+  background: $background-header;
+  //margin: 0 auto;
+  //min-width: 800px;
+  //padding: 10px;
+  //width: 70%;
+  @extend .width-of-page;
+  h1 {
+    text-align: center;
+  }
+}
+
+nav {
+  background: $background-navbar;
+  //margin: 0 auto;
+  //min-width: 800px;
+  //padding: 10px;
+  //width: 70%;
+  @extend .width-of-page;
+  ul {
+    list-style: none;
+    font-size: 16px;
+    margin: 0;
+    padding: 10px;
+    background: $second-background;
+    li {
+      display: inline-block;
+      cursor: pointer;
+      margin: 0 5px 0 0;
+      padding: 5px 10px;
+      background: $background-button-alert;
+      box-shadow: 3px 3px 1px 0 rgba(61, 61, 61, .95);
+      border-radius: 3px;
+      &:active {
+        box-shadow: 2px 2px 1px 0 rgba(61, 61, 61, .95);
+      }
+      a {
+        text-decoration: none;
+        color: $font-bright;
+      }
+    }
+  }
+}
+
 main {
   background: $background-main;
-  margin: 0 auto;
-  min-width: 800px;
-  padding: 10px;
-  width: 70%;
+  //margin: 0 auto;
+  //min-width: 800px;
+  //padding: 10px;
+  //width: 70%;
+  @extend .width-of-page;
   .button {
     button {
       cursor: pointer;
@@ -42,13 +100,6 @@ main {
     }
   }
   .movieDatabase {
-    header {
-      padding: 10px;
-      background: $background-header;
-      h1 {
-        text-align: center;
-      }
-    }
     .searchTitle {
       padding: 10px;
       background: $background-search-title;
@@ -62,6 +113,7 @@ main {
       width: 50%;
       background: $background-results;
       padding: 10px;
+      margin: 0 1px 0 0;
       .changeOrder {
         text-align: right;
         i {
@@ -169,6 +221,11 @@ main {
       display: inline-block;
       padding: 5px;
       background: $background-results;
+    }
+  }
+  .library {
+    .list-library {
+      background: $background-library-list;
     }
   }
 }
