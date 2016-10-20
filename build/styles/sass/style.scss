@@ -226,6 +226,61 @@ main {
   .library {
     .list-library {
       background: $background-library-list;
+      width: 49%;
+      padding: 10px;
+      margin: 0 1px 0 0;
+      display: inline-block;
+      vertical-align: top;
+      h2 {
+        text-align: center;
+      }
+      ul {
+        list-style: none;
+        margin: 10px 0;
+        padding: 10px;
+        li {
+          color: $font-dark;
+          margin: 15px 0 0;
+          border-bottom: 1px solid $main-background;
+          padding: 0 0 3px 0;
+        }
+      }
+    }
+    .detail-library {
+      background: $background-library-list;
+      width: 49%;
+      padding: 10px;
+      //display: inline-block;
+      vertical-align: top;
+      .movieInfo {
+        display: inline-block;
+        vertical-align: top;
+        padding: 0 0 0 10px;
+        div {
+          margin: 5px 0 0 0;
+          padding: 5px;
+        }
+      }
+      .moviePoster {
+        display: inline-block;
+        overflow: hidden;
+        height: 160px;
+        width: 110px;
+        img {
+          border-radius: 3px;
+          max-height: 150px;
+          box-shadow: 3px 3px 1px 0 rgba(0, 0, 0, .75);
+        }
+        div {
+          color: $font-bright;
+          width: 100px;
+          height: 150px;
+          padding: 10px 0 0 10px;
+          background: #27274f;
+          border-radius: 3px;
+          box-shadow: 3px 3px 1px 0 rgba(0, 0, 0, .75);
+        }
+      }
     }
   }
 }

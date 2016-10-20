@@ -138,7 +138,8 @@ var searchMovies = {
         movie: [],
         movieDetail: {},
         movieSelect: false,
-        savedMovies: []
+        savedMovies: [],
+        movieId: "initial"
     }
 };
 
@@ -314,24 +315,24 @@ var detailComponent = Vue.extend({
                     '</div>' +
                     '<div class="movieInfo">' +
                         '<div><span>Title:</span> {{movieDetail.movieDetail.title}}</div>' +
-                            '<div><span>Plot:</span> {{movieDetail.movieDetail.plot}}</div>' +
-                            '<div><span>Actors:</span> {{movieDetail.movieDetail.actors}}</div>' +
-                            '<div><span>Writer:</span> {{movieDetail.movieDetail.writer}}</div>' +
-                            '<div><span>Awards:</span> {{movieDetail.movieDetail.awards}}</div>' +
-                            '<div><span>Country:</span> {{movieDetail.movieDetail.country}}</div>' +
-                            '<div><span>Director:</span> {{movieDetail.movieDetail.director}}</div>' +
-                            '<div><span>Genre:</span> {{movieDetail.movieDetail.genre}}</div>' +
-                            '<div><span>Language:</span> {{movieDetail.movieDetail.language}}</div>' +
-                            '<div><span>Metascore:</span> {{movieDetail.movieDetail.metascore}}</div>' +
-                            '<div><span>Rated:</span> {{movieDetail.movieDetail.rated}}</div>' +
-                            '<div><span>Released:</span> {{movieDetail.movieDetail.released}}</div>' +
-                            '<div><span>Runtime:</span> {{movieDetail.movieDetail.runtime}}</div>' +
-                            '<div><span>IMDB Rating:</span> {{movieDetail.movieDetail.imdbRating}}</div>' +
-                            '<div><span>IMDB Votes:</span> {{movieDetail.movieDetail.imdbVotes}}</div>' +
-                            '<div><span>Type:</span> {{movieDetail.movieDetail.type}}</div>' +
-                        '</div>' +
-                        '<input v-on:click.prevent="saveMovie" type="button" value="Save movie">' +
-                    '</div>',
+                        '<div><span>Plot:</span> {{movieDetail.movieDetail.plot}}</div>' +
+                        '<div><span>Actors:</span> {{movieDetail.movieDetail.actors}}</div>' +
+                        '<div><span>Writer:</span> {{movieDetail.movieDetail.writer}}</div>' +
+                        '<div><span>Awards:</span> {{movieDetail.movieDetail.awards}}</div>' +
+                        '<div><span>Country:</span> {{movieDetail.movieDetail.country}}</div>' +
+                        '<div><span>Director:</span> {{movieDetail.movieDetail.director}}</div>' +
+                        '<div><span>Genre:</span> {{movieDetail.movieDetail.genre}}</div>' +
+                        '<div><span>Language:</span> {{movieDetail.movieDetail.language}}</div>' +
+                        '<div><span>Metascore:</span> {{movieDetail.movieDetail.metascore}}</div>' +
+                        '<div><span>Rated:</span> {{movieDetail.movieDetail.rated}}</div>' +
+                        '<div><span>Released:</span> {{movieDetail.movieDetail.released}}</div>' +
+                        '<div><span>Runtime:</span> {{movieDetail.movieDetail.runtime}}</div>' +
+                        '<div><span>IMDB Rating:</span> {{movieDetail.movieDetail.imdbRating}}</div>' +
+                        '<div><span>IMDB Votes:</span> {{movieDetail.movieDetail.imdbVotes}}</div>' +
+                        '<div><span>Type:</span> {{movieDetail.movieDetail.type}}</div>' +
+                    '</div>' +
+                    '<input v-on:click.prevent="saveMovie" type="button" value="Save movie">' +
+                '</div>',
     data: function () {
         return {
             movieDetail: searchMovies.state,
@@ -364,7 +365,6 @@ var detailComponent = Vue.extend({
                 imdbRating: this.movieDetail.movieDetail.imdbRating,
                 imdbVotes: this.movieDetail.movieDetail.imdbVotes
             });
-            console.log(this.savedMovies.savedMovies);
             this.$http.post('/sendMovie', this.savedMovies.savedMovies).then(function (response) {
                 console.log(response.body);
             }, function (response) {
@@ -404,15 +404,21 @@ var databaseComponent = Vue.extend({
 });
 
 var libraryListComponent = Vue.extend({
-    template:   '<div>Your movies:</div>' +
+    template:   '<h2>Your movies:</h2>' +
                 '<ul>' +
                     '<li v-for="movie in savedMovies.savedMovies">' +
-                        '{{movie.title}}' +
+                        '<a v-on:click="showDetails($event)" id="{{movie.id}}">{{movie.title}}</a>' +
                     '</li>' +
                 '</ul>',
     data: function () {
         return {
-            savedMovies: searchMovies.state
+            savedMovies: searchMovies.state,
+            showMovie: searchMovies.state
+        }
+    },
+    methods: {
+        showDetails: function (event) {
+            this.showMovie.movieId = event.currentTarget.id;
         }
     },
     created: function () {
@@ -421,12 +427,42 @@ var libraryListComponent = Vue.extend({
             var data = JSON.parse(response.body);
             //console.log(data);
             this.savedMovies.savedMovies = data.savedMovies;
-            for(var i = 0; i < this.savedMovies.savedMovies.length; i++) {
-                console.log(this.savedMovies.savedMovies[i].title);
-            }
         }, function (response) {
             console.log("errors!")
         });
+    }
+});
+
+var libraryDetailComponent = Vue.extend({
+    template:   '<div v-for="movieDetail in savedMovies.savedMovies | filterBy showMovie.movieId in \'id\'">' +
+                '<div class="moviePoster">' +
+                        '<div v-if="movieDetail.unknownPoster">Unknown poster</div>' +
+                        '<img v-else v-bind:src="movieDetail.poster" alt="movie poster">' +
+                    '</div>' +
+                    '<div class="movieInfo">' +
+                        '<div><span>Title:</span> {{movieDetail.title}}</div>' +
+                        '<div><span>Plot:</span> {{movieDetail.plot}}</div>' +
+                        '<div><span>Actors:</span> {{movieDetail.actors}}</div>' +
+                        '<div><span>Writer:</span> {{movieDetail.writer}}</div>' +
+                        '<div><span>Awards:</span> {{movieDetail.awards}}</div>' +
+                        '<div><span>Country:</span> {{movieDetail.country}}</div>' +
+                        '<div><span>Director:</span> {{movieDetail.director}}</div>' +
+                        '<div><span>Genre:</span> {{movieDetail.genre}}</div>' +
+                        '<div><span>Language:</span> {{movieDetail.language}}</div>' +
+                        '<div><span>Metascore:</span> {{movieDetail.metascore}}</div>' +
+                        '<div><span>Rated:</span> {{movieDetail.rated}}</div>' +
+                        '<div><span>Released:</span> {{movieDetail.released}}</div>' +
+                        '<div><span>Runtime:</span> {{movieDetail.runtime}}</div>' +
+                        '<div><span>IMDB Rating:</span> {{movieDetail.imdbRating}}</div>' +
+                        '<div><span>IMDB Votes:</span> {{movieDetail.imdbVotes}}</div>' +
+                        '<div><span>Type:</span> {{movieDetail.type}}</div>' +
+                    '</div>' +
+                '</div>',
+    data: function () {
+        return {
+            savedMovies: searchMovies.state,
+            showMovie: searchMovies.state
+        }
     }
 });
 
@@ -435,9 +471,13 @@ var libraryComponent = Vue.extend({
                     '<article class="list-library">' +
                         '<library-list-component></library-list-component>' +
                     '</article>' +
+                    '<article class="detail-library">' +
+                        '<library-detail-component></library-detail-component>' +
+                    '</article>' +
                 '</section>',
     components: {
-        'library-list-component': libraryListComponent
+        'library-list-component': libraryListComponent,
+        'library-detail-component': libraryDetailComponent
     }
 });
 
