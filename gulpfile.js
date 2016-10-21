@@ -10,6 +10,7 @@ var browserSync = require('browser-sync').create();
 var runSequence = require('run-sequence');
 var csslint = require('gulp-csslint');
 var sassLint = require('gulp-sass-lint');
+var nodemon = require('gulp-nodemon');
 
 // configuration
 var paths = {
@@ -22,12 +23,14 @@ var paths = {
     images: 'build/img/*'
 };
 
-gulp.task('browser-sync', function () {
-    browserSync.init({
-        server: {
-            baseDir: "./app"
-        }
+gulp.task('browser-sync', ['reload'], function () {
+    browserSync.init(null, {
+        proxy: "localhost:3005",
+        port: 3000
     });
+    // browserSync.init({
+    //     proxy: "http://localhost:3005"
+    // })
 });
 
 gulp.task('clean', function() {
@@ -92,8 +95,16 @@ gulp.task('addImages', function() {
         .pipe(gulp.dest('app/img'))
 });
 
+gulp.task('server', function() {
+    nodemon({
+        script: 'server.js',
+        ext: 'js html scss',
+        env: { 'NODE_ENV': 'development' }
+    });
+});
+
 gulp.task('build', function(callback) {
-    runSequence('clean', ['html', 'cssreset', 'sass', 'vueScript', 'addImages', 'browser-sync', 'watch'],
+    runSequence('clean', ['html', 'cssreset', 'sass', 'vueScript', 'addImages', 'server', 'browser-sync', 'watch'],
         callback
     )
 });
@@ -103,4 +114,9 @@ gulp.task('watch', function() {
     gulp.watch(paths.html, ['html']);
     gulp.watch(paths.sass, ['sass']);
     gulp.watch(paths.vue, ['vueScript']);
+});
+
+gulp.task('reload', function(done) {
+    browserSync.reload();
+    done();
 });
