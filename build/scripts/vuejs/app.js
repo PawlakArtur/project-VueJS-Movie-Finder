@@ -164,7 +164,9 @@ var searchComponent = Vue.extend({
                     '<option value="episode">episode</option>' +
                     '<option value="game">game</option>' +
                 '</select>' +
-                '<button v-on:click.prevent="searchTitle">Search</button>',
+                '<div class="button">' +
+                    '<button v-on:click.prevent="searchTitle">Search</button>' +
+                '</div>',
     data: function () {
         return {
             searchMovie: {

@@ -24,6 +24,16 @@ $font-dark: #161616;
   width: 70%;
 }
 
+.primary-button {
+  display: inline-block;
+  width: 100px;
+  height: 30px;
+  cursor: pointer;
+  background: $background-button-alert;
+  box-shadow: 3px 3px 1px 0 rgba(61, 61, 61, .95);
+  border-radius: 3px;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -59,19 +69,18 @@ nav {
     padding: 10px;
     background: $second-background;
     li {
-      display: inline-block;
-      cursor: pointer;
+      @extend .primary-button;
       margin: 0 5px 0 0;
-      padding: 5px 10px;
-      background: $background-button-alert;
-      box-shadow: 3px 3px 1px 0 rgba(61, 61, 61, .95);
-      border-radius: 3px;
       &:active {
         box-shadow: 2px 2px 1px 0 rgba(61, 61, 61, .95);
       }
       a {
         text-decoration: none;
         color: $font-bright;
+        display: inline-block;
+        width: 100%;
+        line-height: 30px;
+        text-align: center;
       }
     }
   }
@@ -85,15 +94,19 @@ main {
   //width: 70%;
   @extend .width-of-page;
   .button {
+    display: inline-block;
+    margin: 0 0 0 5px;
     button {
-      cursor: pointer;
-      border-radius: 3px;
+      @extend .primary-button;
+      //cursor: pointer;
+      //border-radius: 3px;
+      //box-shadow: 3px 3px 1px 0 rgba(61, 61, 61, .95);
+      width: auto;
       outline: none;
       border: 0;
       background: $background-body;
       color: $font-bright;
-      padding: 10px 20px;
-      box-shadow: 3px 3px 1px 0 rgba(61, 61, 61, .95);
+      //padding: 10px 20px;
       &:active {
         box-shadow: 2px 2px 1px 0 rgba(61, 61, 61, .95);
       }
@@ -104,8 +117,21 @@ main {
       padding: 10px;
       background: $background-search-title;
       margin: 0 0 0 10px;
-      input {
-        margin: 0 0 5px;
+      input, select {
+        margin: 0 5px;
+        border-radius: 3px;
+        outline: none;
+        border: 1px solid $font-dark;
+        padding: 5px;
+      }
+      select {
+        cursor: pointer;
+      }
+      .button {
+        vertical-align: top;
+        button {
+          height: 31px;
+        }
       }
     }
     .results {
@@ -250,7 +276,7 @@ main {
       background: $background-library-list;
       width: 49%;
       padding: 10px;
-      //display: inline-block;
+      display: inline-block;
       vertical-align: top;
       .movieInfo {
         display: inline-block;
